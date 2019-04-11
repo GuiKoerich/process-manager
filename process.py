@@ -5,7 +5,7 @@ class Process(object):
     __MIN_PID = 1000
     __MAX_PID = 9999
     __MIN_TTL = 1
-    __MAX_TTL = 10
+    __MAX_TTL = 9
     __MIN_PRIORITY = 0
     __MAX_PRIORITY = 5
     __STATUS = {0:'Ready', 1:'Executing', 2:'Paused', 3:'Finished'}

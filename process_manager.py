@@ -7,7 +7,7 @@ class ProcessManager(object):
         pass
 
     def add_process(self, process):
-        if self.__list_is_empty():
+        if self.list_is_empty():
             self.__list.append(process)
         else:
             self.__get_index_by_priority(process)
@@ -17,7 +17,7 @@ class ProcessManager(object):
             self.__clear_index()
 
     def execute_first_process(self):
-        if not self.__list_is_empty():
+        if not self.list_is_empty():
             first_process = self.__list.__getitem__(0)
             ttl = first_process.ttl
             first_process.make_process(self.__is_pause_process())
@@ -26,7 +26,8 @@ class ProcessManager(object):
             print('Processando...')
             print(f'PID: {first_process.pid} | TTL: {ttl} -> {first_process.ttl} | Status: {first_process.status}')
             print()
-            
+
+
             self.__change_process_to_begin()
 
             self.__remove_process_finished()
@@ -39,7 +40,7 @@ class ProcessManager(object):
     def __clear_index(self):
         self.__index = -1
 
-    def __list_is_empty(self):
+    def list_is_empty(self):
         if len(self.__list) == 0:
             return True
 
@@ -76,19 +77,19 @@ class ProcessManager(object):
             self.add_process(next_process)
 
     def show_list(self):
-        if self.__list_is_empty():
+        if self.list_is_empty():
             print('A lista de processos está vazia')
         else:
             for i in self.__list:
                 print(i)
 
     def have_process(self):
-        if not self.__list_is_empty() and len(self.__list) > 1:
+        if not self.list_is_empty() and len(self.__list) > 1:
             return True
         return False
 
-    def final_simulation(self):
-        if len(self.__list) >= 4 :
+    def final_simulation(self, value):
+        if len(self.__list) >= value :
             return True
 
         return False
