@@ -19,9 +19,6 @@ class Process(object):
 
     @property
     def time_finished(self):
-        if self.__time_finished == 0:
-            return 'Not finished'
-
         return self.__time_finished
 
     @property
@@ -39,6 +36,12 @@ class Process(object):
     @property
     def status(self):
         return self.__status
+
+    def __process_is_finished(self):
+        if self.time_finished > 0:
+            return True
+
+        return False
 
     def __generate_process_infos(self, init, finish):
         return randint(init, finish)
@@ -85,4 +88,7 @@ class Process(object):
         return False
 
     def __str__(self):
-        return f'PID: {self.pid} | Priority: {self.priority} | TTL: {self.ttl} | Status: {self.status} | Time clock finished: {self.time_finished}'
+        if self.__process_is_finished():
+            return f'PID: {self.pid} | Priority: {self.priority} | TTL: {self.ttl} | Status: {self.status} | Time clock finished: {self.time_finished}'
+
+        return f'PID: {self.pid} | Priority: {self.priority} | TTL: {self.ttl} | Status: {self.status}'
