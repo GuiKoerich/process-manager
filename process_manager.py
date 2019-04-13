@@ -2,9 +2,19 @@ class ProcessManager(object):
     __list = []
     __index = -1
     __STATUS = {0: 'Ready', 1: 'Executing', 2: 'Paused', 3: 'Finished'}
+    __finished = []
+    __clock = 0
 
     def __init__(self):
         pass
+
+    @property
+    def clock(self):
+        return self.__clock
+
+    def __increase_clock(self):
+        self.__clock += 1
+
 
     def add_process(self, process):
         if self.list_is_empty():
@@ -17,10 +27,11 @@ class ProcessManager(object):
             self.__clear_index()
 
     def execute_first_process(self):
+        self.__increase_clock()
         if not self.list_is_empty():
             first_process = self.__list.__getitem__(0)
             ttl = first_process.ttl
-            first_process.make_process(self.__is_pause_process())
+            first_process.make_process(self.__is_pause_process(), self.clock)
 
             print()
             print('Processando...')
@@ -32,10 +43,15 @@ class ProcessManager(object):
 
             self.__remove_process_finished()
 
+        else:
+            print('Todos os processos foram executados, programa finalizado!')
+            exit(0)
+
     def __remove_process_finished(self):
         for i in self.__list:
             if i.ttl == 0:
                 self.__list.remove(i)
+                self.__finished.append(i)
 
     def __clear_index(self):
         self.__index = -1
@@ -80,8 +96,10 @@ class ProcessManager(object):
         if self.list_is_empty():
             print('A lista de processos está vazia')
         else:
+            print('=== INÍCIO FILA EXECUÇÃO ===')
             for i in self.__list:
                 print(i)
+            print('=== FIM FILA EXECUÇÃO ===')
 
     def have_process(self):
         if not self.list_is_empty() and len(self.__list) > 1:
@@ -93,3 +111,12 @@ class ProcessManager(object):
             return True
 
         return False
+
+    def show_finished(self):
+        if self.__finished.__len__() == 0:
+            print('A lista de processos finalizados está vazia!')
+        else:
+            print('=== INÍCIO FILA DE PROCESSOS FINALIZADOS ===')
+            for process in self.__finished:
+                print(process)
+            print('=== FINAL FILA PROCESSOS FINALIZADOS ===')

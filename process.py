@@ -15,6 +15,14 @@ class Process(object):
         self.__priority = self.__generate_process_infos(self.__MIN_PRIORITY, self.__MAX_PRIORITY)
         self.__ttl = self.__generate_process_infos(self.__MIN_TTL, self.__MAX_TTL)
         self.__status = self.__STATUS.get(0)
+        self.__time_finished = 0
+
+    @property
+    def time_finished(self):
+        if self.__time_finished == 0:
+            return 'Not finished'
+
+        return self.__time_finished
 
     @property
     def pid(self):
@@ -35,13 +43,18 @@ class Process(object):
     def __generate_process_infos(self, init, finish):
         return randint(init, finish)
 
-    def make_process(self, pause):
+    def make_process(self, pause, clock):
         self.__ttl = self.ttl - 1
-        self.__change_status(pause)
+        self.__change_status(pause, clock)
 
-    def __change_status(self, pause):
-        if self.status == self.__STATUS.get(0):
+    def __change_status(self, pause, clock):
+        if self.status == self.__STATUS.get(0) and self.__to_execute():
             self.__status = self.__STATUS.get(1)
+            return
+
+        elif self.status == self.__STATUS.get(0) and not self.__to_execute():
+            self.__status = self.__STATUS.get(3)
+            self.__time_finished = clock
             return
 
         elif self.status == self.__STATUS.get(1) and pause:
@@ -53,10 +66,16 @@ class Process(object):
 
         elif self.status == self.__STATUS.get(1) and not pause and not self.__to_execute():
             self.__status = self.__STATUS.get(3)
+            self.__time_finished = clock
             return
 
         elif self.status == self.__STATUS.get(2) and self.__to_execute():
             self.__status = self.__STATUS.get(1)
+            return
+
+        elif self.status == self.__STATUS.get(2) and not self.__to_execute():
+            self.__status = self.__STATUS.get(3)
+            self.__time_finished = clock
             return
 
     def __to_execute(self):
@@ -66,4 +85,4 @@ class Process(object):
         return False
 
     def __str__(self):
-        return f'PID: {self.pid} | Priority: {self.priority} | TTL: {self.ttl} | Status: {self.status}'
+        return f'PID: {self.pid} | Priority: {self.priority} | TTL: {self.ttl} | Status: {self.status} | Time clock finished: {self.time_finished}'
