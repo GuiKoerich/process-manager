@@ -47,7 +47,7 @@ class Process(object):
         return randint(init, finish)
 
     def make_process(self, pause, clock):
-        self.__ttl = self.ttl - 1
+        self.__ttl -= 1
         self.__change_status(pause, clock)
 
     def __change_status(self, pause, clock):
